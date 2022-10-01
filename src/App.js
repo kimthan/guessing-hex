@@ -4,6 +4,7 @@ function App() {
   const [bgColor, setBgColor] = useState();
   const [clickedButton, setClickedButton] = useState("");
   const [correctButton, setCorrectButton] = useState(undefined);
+  console.log("test");
 
   function randomArr() {
     let newArr = [];
