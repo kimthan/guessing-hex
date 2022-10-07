@@ -1,100 +1,63 @@
 import React, { useEffect, useState } from "react";
+
+const divs = [1, 2, 3, 4, 5];
+
 function App() {
-  const [randomButtons, setRandomButtons] = useState([]);
-  const [bgColor, setBgColor] = useState();
-  const [clickedButton, setClickedButton] = useState("");
-  const [correctButton, setCorrectButton] = useState(undefined);
-  console.log("test");
+  const [keypress, setKeypress] = useState(null);
+  const [selectedDiv, setSelectedDiv] = useState();
+  const [selectedClass, setSelectedClass] = useState("bg-green-300");
 
-  function randomArr() {
-    let newArr = [];
-    for (let i = 0; i < 3; i++) {
-      newArr.push(randomColor());
+  console.log("kim".charAt(Math.floor(Math.random() * "kim".length)));
+
+  function handleClick(e) {}
+
+  function handleKeydown(e) {
+    switch (e.key) {
+      case "ArrowUp":
+        if (selectedDiv === 1) return;
+        setSelectedDiv((prev) => prev - 1);
+
+        break;
+      case "ArrowDown":
+        if (selectedDiv === 6) return;
+        setSelectedDiv((prev) => prev + 1);
+
+        break;
+      case "Enter":
+        setSelectedDiv(divs.length + 1);
+        break;
     }
-
-    return newArr;
   }
-
   useEffect(() => {
-    const random = randomArr();
+    setSelectedDiv(divs.length + 1);
+  }, []);
+  useEffect(() => {
+    console.log("useeffect");
+    window.addEventListener("keydown", handleKeydown);
 
-    setRandomButtons(random);
-    setBgColor(random[Math.floor(Math.random() * 3)]);
-  }, [clickedButton]);
+    return () => {
+      console.log("remove useeffect");
 
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, [handleKeydown]);
   return (
-    <div className="flex flex-col">
-      <div
-        style={{ backgroundColor: "#" + bgColor }}
-        className={`w-[300px] h-[300px] mx-auto mt-[100px]`}
-      >
-        {bgColor}
-      </div>
-      <div className="flex justify-center">
-        {randomButtons.map((item) => {
-          return (
-            <Button
-              key={item}
-              {...{
-                bgColor,
-                setBgColor,
-                item,
-                randomArr,
-                clickedButton,
-                setClickedButton,
-                correctButton,
-                setCorrectButton,
-              }}
-            />
-          );
-        })}
-      </div>
-      <div className="mx-auto">
-        {correctButton === undefined ? "" : correctButton ? "correct" : "wrong"}
-      </div>
+    <div className="flex flex-col gap-2 items-center">
+      {divs.map((div) => {
+        return (
+          <div
+            key={div}
+            id={div}
+            onClick={handleClick}
+            className={`w-[200px] h-[50px] rounded ${
+              selectedDiv === div ? selectedClass : "bg-gray-300"
+            } flex items-center justify-center`}
+          >
+            {div}
+          </div>
+        );
+      })}
     </div>
-  );
-}
-
-function randomColor() {
-  let hex = [];
-  const hexLetters = ["A", "B", "C", "D", "E", "F"];
-  const hexNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const arr = hexLetters.concat(hexNumbers);
-
-  for (let i = 0; i < 6; i++) {
-    hex += randomGenerator(arr);
-  }
-
-  return hex.toString();
-}
-
-function randomGenerator(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function Button({
-  item,
-  bgColor,
-  setClickedButton,
-  correctButton,
-  setCorrectButton,
-}) {
-  const color = "#" + randomColor();
-
-  function handleClick(e) {
-    if (e.target.innerHTML === bgColor) {
-      setCorrectButton(true);
-    } else {
-      setCorrectButton(false);
-    }
-    setClickedButton(e.target.innerHTML);
-  }
-
-  return (
-    <button onClick={handleClick} className="p-2 bg-gray-500 m-2">
-      {item}
-    </button>
   );
 }
 
